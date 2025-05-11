@@ -17,7 +17,7 @@
     "ora": "^8.2.0"
   },
   "bin": {
-    "my-node-cli": "./index.js"
+    "my-node-cli": "./bin/index.js"
   },
   "type": "module"
 }
