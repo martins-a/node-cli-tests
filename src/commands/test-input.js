@@ -5,7 +5,7 @@ import chalk from "chalk";
 import fs from 'fs';
 import path from 'path';
 
-export const testAMethod = () => {
+export const testInput = () => {
     program.command('test-a-method')
     .description('Test a given method')
     .action(async () => {
@@ -14,12 +14,12 @@ export const testAMethod = () => {
                 {
                     type: "editor",
                     name: "method",
-                    message: "What method do you want to test?"
+                    message: "Provide the method to be tested"
                 },
                 {
                     type: "list",
                     name: "language",
-                    message: "What is the programming language of this code?",
+                    message: "Select a programming language",
                     choices: [
                         'Javascript'
                     ]
