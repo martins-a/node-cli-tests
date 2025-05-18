@@ -4,12 +4,17 @@ import ollama from "ollama";
 import chalk from "chalk";
 import fs from 'fs';
 import path from 'path';
+import {assureOllamaIsOn, checkIsInstalled} from "../utils/helpers.js";
 
 export const testFile = () => {
     try {
+
         program.command('test-file')
             .description('Test the methods on a given file')
             .action(async () => {
+
+                checkIsInstalled('ollama');
+                await assureOllamaIsOn();
 
                 const userAnswer = await inquirer.prompt([
                     {
@@ -36,15 +41,15 @@ export const testFile = () => {
                     fileContent = fs.readFileSync(absolutePath, 'utf8');
                 }
 
-                console.log(chalk.red('file content...'));
-                console.log(fileContent);
+                //console.log(chalk.red('file content...'));
+                //console.log(fileContent);
 
                 const lines = fileContent.split('\n');
                 let i = 0;
                 const functions = [];
 
-                console.log(chalk.red('functions will be parsed - total lines:'));
-                console.log(lines.length);
+                //console.log(chalk.red('functions will be parsed - total lines:'));
+                //console.log(lines.length);
 
                 while (i < lines.length) {
 
@@ -62,7 +67,7 @@ export const testFile = () => {
 
                             i++;
                             let currentLine = lines[i];
-                            console.log(`line index is ... : ${i}`);
+                            //console.log(`line index is ... : ${i}`);
                             fnLines.push(currentLine);
 
                             // Detect if the function started (to start counting braces)
@@ -87,10 +92,10 @@ export const testFile = () => {
                     }
 
                     i++;
-                    console.log(`line index is ... : ${i}`);
+                    //console.log(`line index is ... : ${i}`);
                 }
 
-                console.log(chalk.red('I parsed the functions...'));
+                //console.log(chalk.red('I parsed the functions...'));
 
                 const responses = [];
                 for (const fn of functions) {
@@ -111,11 +116,28 @@ export const testFile = () => {
                     responses.push(llmResponse.message.content);
                 }
 
-                for (const response of responses) {
-                    console.log(chalk.blue('-----------------------'));
-                    console.log(response);
-                    console.log(chalk.blue('-----------------------'));
-                }
+                const output = responses.join('\n\n');
+                //console.log(chalk.red('output...'));
+                //console.log(output);
+
+                // TODO: let the user configure the output path.
+                const fileName = `tests_output_${Date.now()}`;
+                const filePath = path.join('data', fileName);
+
+               fs.mkdir(path.dirname(filePath), { recursive: true }, (err) => {
+                    if (err) {
+                        console.error('Error creating directory:', err);
+                        return;
+                    }
+
+                    fs.writeFile(filePath, output, (err) => {
+                        if (err) {
+                            console.error('Error writing file:', err);
+                            return;
+                        }
+                        console.log('Text saved successfully to', filePath);
+                    });
+                });
 
             })
     } catch(error) {
