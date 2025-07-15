@@ -35,16 +35,29 @@ export const testInput = () => {
 
             //console.log(chalk.green('Tests are being generated...'));
 
+             const systemPrompt = `
+                Follow these rules:
+                - Output only the test method
+                - Use Jest framework
+                - Use typescript
+                - Consider that the project being tested is written in Angular 20
+             `;
+
+            const userPrompt = `
+                Write a unit test for the following method:
+                ${userAnswer.method}
+            `;
+
             const llmResponse = await ollama.chat({
-                model: 'llama3.2',
+                model: 'qwen2.5-coder:1.5b',
                 messages: [
                     {
                         role: 'system',
-                        content: 'Output only the test methods'
+                        content: systemPrompt
                     },
                     {
                         role: 'user',
-                        content: `Write a unit test for the following method that is written in ${userAnswer.language}: ${userAnswer.method}`
+                        content: userPrompt
                     }
                 ]
             });
