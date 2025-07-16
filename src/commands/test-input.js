@@ -5,6 +5,7 @@ import chalk from "chalk";
 import fs from 'fs';
 import path from 'path';
 import {assureOllamaIsOn, checkIsInstalled} from '../utils/helpers.js';
+import {promptFactory} from "../prompts/prompt-factory.js";
 
 export const testInput = () => {
 
@@ -24,30 +25,33 @@ export const testInput = () => {
                         message: "Provide the method to be tested"
                     },
                     {
+                        type: 'editor',
+                        name: "externalContext",
+                        message: "Provide external context"
+                    }
+                    /*{
                         type: "list",
                         name: "language",
                         message: "Select a programming language",
                         choices: [
                             'Javascript'
                         ]
-                    }
+                    }*/
              ]);
 
             //console.log(chalk.green('Tests are being generated...'));
 
-             const systemPrompt = `
-                Follow these rules:
-                - Output only the test method
-                - Use Jest framework
-                - Use typescript
-                - Consider that the project being tested is written in Angular 20
-             `;
+            // TODO: let the user select all parameters or configure and save then
+            const [systemPrompt, userPrompt ] = promptFactory.testSingleMethod(
+                'typescript',
+                'angular 20',
+                'jest',
+                userAnswer.method,
+                userAnswer.externalContext
+            );
 
-            const userPrompt = `
-                Write a unit test for the following method:
-                ${userAnswer.method}
-            `;
-
+            // TODO: let the user select the model
+            // TODO: create the connector layer
             const llmResponse = await ollama.chat({
                 model: 'qwen2.5-coder:1.5b',
                 messages: [
@@ -68,6 +72,7 @@ export const testInput = () => {
             // TODO: let the user configure the output path.
             const filePath = path.join('data', fileName);
 
+            // TODO: create a file-helper
             fs.mkdir(path.dirname(filePath), { recursive: true }, (err) => {
                 if (err) {
                     console.error('Error creating directory:', err);
