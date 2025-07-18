@@ -6,6 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import {assureOllamaIsOn, checkIsInstalled} from '../utils/helpers.js';
 import {promptFactory} from "../prompts/prompt-factory.js";
+import {commandsConstants} from "./commands-constants.js";
 
 export const testInput = () => {
 
@@ -18,42 +19,24 @@ export const testInput = () => {
             checkIsInstalled('ollama');
             await assureOllamaIsOn();
 
-             const userAnswer = await inquirer.prompt([
-                    {
-                        type: "editor",
-                        name: "method",
-                        message: "Provide the method to be tested"
-                    },
-                    {
-                        type: 'editor',
-                        name: "externalContext",
-                        message: "Provide external context"
-                    }
-                    /*{
-                        type: "list",
-                        name: "language",
-                        message: "Select a programming language",
-                        choices: [
-                            'Javascript'
-                        ]
-                    }*/
-             ]);
+			const userAnswer = await inquirer.prompt(commandsConstants.inputFileQuestions);
 
-            //console.log(chalk.green('Tests are being generated...'));
+            console.log(chalk.green('Tests are being generated...'));
 
-            // TODO: let the user select all parameters or configure and save then
+			const { method, externalContext, language, programmingFramework, testFramework } = userAnswer;
+
             const [systemPrompt, userPrompt ] = promptFactory.testSingleMethod(
-                'typescript',
-                'angular 20',
-                'jest',
-                userAnswer.method,
-                userAnswer.externalContext
+				language,
+				programmingFramework,
+				testFramework,
+				method,
+				externalContext
             );
 
             // TODO: let the user select the model
             // TODO: create the connector layer
             const llmResponse = await ollama.chat({
-                model: 'qwen2.5-coder:1.5b',
+                model: 'qwen2.5-coder:3b',
                 messages: [
                     {
                         role: 'system',
