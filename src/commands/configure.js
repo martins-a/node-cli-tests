@@ -1,9 +1,7 @@
 import { program } from "commander";
 import inquirer from "inquirer";
-import ollama from "ollama";
-import chalk from "chalk";
-import fs from 'fs';
 import {commandsConstants} from "./commands-constants.js";
+import {fsHelper} from "../utils/fs-helper.js";
 
 export const configure = () => {
 
@@ -15,7 +13,7 @@ export const configure = () => {
 
 				const userAnswer = await inquirer.prompt(commandsConstants.configureQuestions);
 
-				// TODO: save options on file
+				fsHelper.saveFileToPath('data', JSON.stringify(userAnswer), 'configurations.json');
 
 			} catch (error) {
 				console.error(error);

@@ -6,6 +6,7 @@ import figlet from "figlet";
 
 import {testInput} from "../src/commands/test-input.js";
 import {testFile} from "../src/commands/test-file.js";
+import {configure} from "../src/commands/configure.js";
 
 console.log(
     chalk.yellow(figlet.textSync("Testbot is running", { horizontalLayout: "full" }))
@@ -16,5 +17,6 @@ program.version("1.0.0").description("My Node CLI");
 // commands
 testInput();
 testFile();
+configure();
 
 program.parse(process.argv);

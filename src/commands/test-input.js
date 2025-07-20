@@ -2,28 +2,39 @@ import { program } from "commander";
 import inquirer from "inquirer";
 import ollama from "ollama";
 import chalk from "chalk";
-import fs from 'fs';
-import path from 'path';
 import {assureOllamaIsOn, checkIsInstalled} from '../utils/helpers.js';
 import {promptFactory} from "../prompts/prompt-factory.js";
 import {commandsConstants} from "./commands-constants.js";
+import {fsHelper} from "../utils/fs-helper.js";
 
 export const testInput = () => {
 
     program.command('test-input')
     .description('Test a given method')
-    .action(async () => {
+    .option('-p', '--preference', 'Configure preferences')
+    .action(async (_, args) => {
 
         try {
+
+            const opts = args.opts();
 
             checkIsInstalled('ollama');
             await assureOllamaIsOn();
 
-			const userAnswer = await inquirer.prompt(commandsConstants.inputFileQuestions);
+            let cachedOptions = {};
+            let userInput = {};
+            if (opts.p || opts.preference) {
+                userInput = await inquirer.prompt(commandsConstants.inputFileQuestions);
+            } else {
+                userInput = await inquirer.prompt(commandsConstants.inputFileQuestionsNoConfig);
+                cachedOptions = fsHelper.readJsonSync('data/configurations.json');
+            }
+
+            console.log(JSON.stringify(cachedOptions));
 
             console.log(chalk.green('Tests are being generated...'));
 
-			const { method, externalContext, language, programmingFramework, testFramework } = userAnswer;
+			const { method, externalContext, language, programmingFramework, testFramework } = { cachedOptions, userInput };
 
             const [systemPrompt, userPrompt ] = promptFactory.testSingleMethod(
 				language,
@@ -53,23 +64,8 @@ export const testInput = () => {
 
             const fileName = `tests_output_${Date.now()}`;
             // TODO: let the user configure the output path.
-            const filePath = path.join('data', fileName);
 
-            // TODO: create a file-helper
-            fs.mkdir(path.dirname(filePath), { recursive: true }, (err) => {
-                if (err) {
-                    console.error('Error creating directory:', err);
-                    return;
-                }
-
-                fs.writeFile(filePath, textToSave, (err) => {
-                    if (err) {
-                        console.error('Error writing file:', err);
-                        return;
-                    }
-                    console.log('Text saved successfully to', filePath);
-                });
-            });
+            fsHelper.saveFileToPath('data', textToSave, fileName);
 
         } catch(error) {
             console.log(chalk.red('Error:'));
