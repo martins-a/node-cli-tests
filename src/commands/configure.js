@@ -1,6 +1,6 @@
 import { program } from "commander";
 import inquirer from "inquirer";
-import {commandsConstants} from "./commands-constants.js";
+import {commandsConstants} from "../constants/commands-constants.js";
 import {fsHelper} from "../utils/fs-helper.js";
 
 export const configure = () => {

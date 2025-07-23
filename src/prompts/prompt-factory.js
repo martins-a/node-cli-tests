@@ -1,5 +1,5 @@
 
-import { prompts } from './prompts-constants.js';
+import { prompts } from '../constants/prompts-constants.js';
 
 export const promptFactory = {
     testSingleMethod: (progLanguage, progFramework, testFramework, testedCode, externalContext) => {

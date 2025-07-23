@@ -1,3 +1,4 @@
+import {aiAssistant} from "./ai-assistants.js";
 
 const configOptions = [
 	{
@@ -23,6 +24,15 @@ const configOptions = [
 		message: "Select a test framework",
 		choices: [
 			'Jest'
+		]
+	},
+	{
+		type: "list",
+		name: "aiAssistant",
+		message: "Select the AI assistant",
+		choices: [
+			aiAssistant.ollama,
+			aiAssistant.claudeAI,
 		]
 	}
 ]
