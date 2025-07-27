@@ -7,6 +7,9 @@ My Node CLI is a tool for doing awesome things directly from your terminal.
 npm install -g my-node-cli
 ```
 
+## Install globally
+npm install -g .
+
 ## Usage
 To start using My Node CLI, run:
 

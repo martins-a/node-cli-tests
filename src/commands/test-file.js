@@ -5,6 +5,9 @@ import chalk from "chalk";
 import fs from 'fs';
 import path from 'path';
 import {assureOllamaIsOn, checkIsInstalled} from "../utils/helpers.js";
+import {validationMiddleware} from "../validation/validation-middleware.js";
+import {fsHelper} from "../utils/fs-helper.js";
+import {fileURLToPath} from "url";
 
 export const testFile = () => {
     try {
@@ -13,8 +16,15 @@ export const testFile = () => {
             .description('Test the methods on a given file')
             .action(async () => {
 
-                checkIsInstalled('ollama');
-                await assureOllamaIsOn();
+                // TODO: refactoring
+
+                const __filename = fileURLToPath(import.meta.url);
+                const __dirname = path.dirname(__filename);
+                const grandParentDir = path.resolve(__dirname, '..', '..');
+
+                let cachedOptions = fsHelper.readJsonSync(path.join(grandParentDir, 'data/configurations.json'));
+
+                await validationMiddleware.validate(cachedOptions);
 
                 const userAnswer = await inquirer.prompt([
                     {

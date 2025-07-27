@@ -34,6 +34,11 @@ const configOptions = [
 			aiAssistant.ollama,
 			aiAssistant.claudeAI,
 		]
+	},
+	{
+		type: "input",
+		name: "outputPath",
+		message: "Configure the output path (use a absolute path)",
 	}
 ]
 
@@ -52,7 +57,7 @@ const inputFileQuestions = [
 
 export const commandsConstants = {
 	configureQuestions: [
-		...configOptions
+		...configOptions,
 	],
 	inputFileQuestions: [
 		...inputFileQuestions,

@@ -25,6 +25,7 @@ export const fsHelper = {
 	},
 	readJsonSync: (filePath) => {
 		try {
+
 			if (!fs.existsSync(filePath)) {
 				throw new Error(`File ${filePath} does not exist!`);
 			}
