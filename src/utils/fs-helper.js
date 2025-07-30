@@ -21,6 +21,7 @@ export const fsHelper = {
 			console.log(chalk.green(`File successfully saved on: ${finalPath}`));
 		} catch (error) {
 			console.error(chalk.red(`Error saving the file`,  error));
+			throw error;
 		}
 	},
 	readJsonSync: (filePath) => {
@@ -36,7 +37,23 @@ export const fsHelper = {
 
 		} catch (error) {
 			console.error(chalk.red(`Error reading file`,  error));
-			return null;
+			throw error;
+		}
+	},
+	readFileFromPath: (filePath, relative=false) => {
+		try {
+			let fileContent = '';
+			if (relative) {
+				fileContent = fs.readFileSync(filePath, 'utf8');
+			} else {
+				const absolutePath = path.join(__dirname, filePath);
+				fileContent = fs.readFileSync(absolutePath, 'utf8');
+			}
+
+			return fileContent;
+		} catch (error) {
+			console.error(chalk.red(`Error reading file`,  error));
+			throw error;
 		}
 	}
 }

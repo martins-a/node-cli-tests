@@ -55,6 +55,23 @@ const inputFileQuestions = [
 	},
 ]
 
+const testFileQuestions = [
+	{
+		type: 'list',
+		name: 'pathType',
+		message: 'Select the type of path',
+		choices: [
+			'relative',
+			'absolute'
+		]
+	},
+	{
+		type: 'input',
+		name: 'path',
+		message: "Where's your file located?"
+	}
+]
+
 export const commandsConstants = {
 	configureQuestions: [
 		...configOptions,
@@ -63,5 +80,6 @@ export const commandsConstants = {
 		...inputFileQuestions,
 		...configOptions,
 	],
-	inputFileQuestionsNoConfig: [...inputFileQuestions]
+	inputFileQuestionsNoConfig: [...inputFileQuestions],
+	testFileQuestionsNoConfig: [...testFileQuestions],
 }

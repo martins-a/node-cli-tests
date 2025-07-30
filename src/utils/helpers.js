@@ -1,29 +1,63 @@
 import os from 'os';
 import { exec } from 'child_process';
+import chalk from "chalk";
 
-export const checkIsInstalled = (programName) => {
-    const command =  os.platform() === 'win32' ? `where ${programName}` : `which ${programName}`;
+export const findFunctionsByAnnotation = (fileContent, annotation) => {
+    try {
 
-    exec(command, (error, stdout, stderr) => {
-        if (error) {
-            console.log('Is not installed.');
-        } else {
-            console.log('Is installed.');
-        }
-    })
-}
+        const lines = fileContent.split('\n');
+        let i = 0;
+        const functions = [];
 
-export const assureOllamaIsOn = () => {
-    return new Promise((resolve, reject) => {
-        const command = 'ollama ps';
-        exec(command, (error, stdout, stderr) => {
-            if (error) {
-                console.log('Ollama is not running.');
-                reject();
-            } else {
-                console.log('Ollama is running.');
-                resolve();
+        //console.log(chalk.red('functions will be parsed - total lines:'));
+        //console.log(lines.length);
+
+        while (i < lines.length) {
+
+            const line = lines[i].trim();
+            if (line === annotation) {
+
+                console.log(chalk.red('found a function to be tested...'));
+
+                const fnLines = [];
+
+                let braceCount = 0;
+                let foundStart = false;
+
+                while (i < lines.length ) {
+
+                    i++;
+                    let currentLine = lines[i];
+                    fnLines.push(currentLine);
+
+                    // Detect if the function started (to start counting braces)
+                    if (!foundStart && currentLine.includes('{')) {
+                        foundStart = true;
+                    }
+
+                    // Count braces to detect the end of a function
+                    if (foundStart) {
+                        braceCount += (currentLine.match(/{/g) || []).length;
+                        braceCount -= (currentLine.match(/}/g) || []).length;
+
+                        if (braceCount === 0) {
+                            break;
+                        }
+                    }
+
+                }
+
+                functions.push(fnLines.join('\n').trim());
+
             }
-        })
-    });
+
+            i++;
+        }
+
+        return functions;
+
+    } catch(error) {
+        console.error(error);
+        throw error;
+    }
 }

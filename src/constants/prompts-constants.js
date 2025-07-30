@@ -20,5 +20,13 @@ export const prompts = {
                 ${testedCode}
             `
         }
+    },
+    singleMethod_NoParameters: {
+        system: () => {
+            return `Output only the test methods`
+        },
+        user: (testedCode) => {
+            return `Write a unit test for the following method that is written in javascript: ${testedCode}`
+        }
     }
 }
