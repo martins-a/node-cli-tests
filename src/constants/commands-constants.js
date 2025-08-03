@@ -33,6 +33,7 @@ const configOptions = [
 		choices: [
 			aiAssistant.ollama,
 			aiAssistant.claudeAI,
+			aiAssistant.openAI
 		]
 	},
 	{
@@ -44,12 +45,12 @@ const configOptions = [
 
 const inputFileQuestions = [
 	{
-		type: "editor",
+		type: "input",
 		name: "method",
 		message: "Provide the method to be tested"
 	},
 	{
-		type: 'editor',
+		type: 'input',
 		name: "externalContext",
 		message: "Provide external context"
 	},

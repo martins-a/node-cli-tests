@@ -18,7 +18,8 @@ export const testFile = () => {
 
         program.command('test-file')
             .description('Test the methods on a given file')
-            .action(async () => {
+            .argument('<string>', 'path to the file')
+            .action(async (filePath) => {
 
                 // TODO: refactoring
 
@@ -30,9 +31,9 @@ export const testFile = () => {
 
                 await validationMiddleware.validate(cachedOptions);
 
-                const userAnswer = await inquirer.prompt(commandsConstants.testFileQuestionsNoConfig);
+                //const userAnswer = await inquirer.prompt(commandsConstants.testFileQuestionsNoConfig);
 
-                let fileContent = fsHelper.readFileFromPath(userAnswer.path, userAnswer.pathType === 'relative');
+                let fileContent = fsHelper.readFileFromPath(filePath, true);
 
                 //console.log(chalk.red('file content...'));
                 //console.log(fileContent);
