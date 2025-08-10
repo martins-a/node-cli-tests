@@ -1,17 +1,15 @@
 import { program } from "commander";
-import inquirer from "inquirer";
-import ollama from "ollama";
-import fs from 'fs';
 import path from 'path';
 import {findFunctionsByAnnotation} from "../utils/helpers.js";
 import {validationMiddleware} from "../validation/validation-middleware.js";
 import {fsHelper} from "../utils/fs-helper.js";
 import {fileURLToPath} from "url";
-import {commandsConstants} from "../constants/commands-constants.js";
 import {connectorsRouter} from "../connectors/connector-router.js";
 import {promptFactory} from "../prompts/prompt-factory.js";
+import inquirer from "inquirer";
+import {commandsConstants} from "../constants/commands-constants.js";
 
-const annotationText = "//testbot";
+const annotationText = "//test-bot";
 
 export const testFile = () => {
     try {
@@ -19,9 +17,8 @@ export const testFile = () => {
         program.command('test-file')
             .description('Test the methods on a given file')
             .argument('<string>', 'path to the file')
-            .action(async (filePath) => {
-
-                // TODO: refactoring
+            .option('-c, --context', 'Request external context')
+            .action(async (filePath, opts) => {
 
                 const __filename = fileURLToPath(import.meta.url);
                 const __dirname = path.dirname(__filename);
@@ -29,34 +26,35 @@ export const testFile = () => {
 
                 let cachedOptions = fsHelper.readJsonSync(path.join(grandParentDir, 'data/configurations.json'));
 
-                await validationMiddleware.validate(cachedOptions);
+                let userInput = {};
+                // User wants to use additional external context
+                if ( opts.context ) {
+                    // noinspection JSCheckFunctionSignatures
+                    userInput = await inquirer.prompt(commandsConstants.contextQuestion);
+                }
 
-                //const userAnswer = await inquirer.prompt(commandsConstants.testFileQuestionsNoConfig);
+                const { language, programmingFramework, testFramework, aiAssistant, outputPath, externalContext } =
+                    { ...cachedOptions, ...userInput };
+
+                await validationMiddleware.validate(cachedOptions);
 
                 let fileContent = fsHelper.readFileFromPath(filePath, true);
 
-                //console.log(chalk.red('file content...'));
-                //console.log(fileContent);
-
                 const functions = findFunctionsByAnnotation(fileContent, annotationText);
 
-                //console.log(chalk.red('I parsed the functions...'));
+                const [systemPrompt, userPrompt ] = promptFactory.testSingleMethod(
+                    language,
+                    programmingFramework,
+                    testFramework,
+                    functions,
+                    externalContext
+                );
 
-                const responses = [];
-                for (const fn of functions) {
-                    const [systemPrompt, userPrompt ] = promptFactory.testSingleMethod(fn);
-                    const llmResponse = await connectorsRouter.resolve(null, systemPrompt, userPrompt);
-                    responses.push(llmResponse);
-                }
-                const output = responses.join('\n\n');
+                const llmResponse = await connectorsRouter.resolve(aiAssistant, systemPrompt, userPrompt);
 
-                //console.log(chalk.red('output...'));
-                //console.log(output);
-
-                // TODO: let the user configure the output path.
                 const fileName = `tests_output_${Date.now()}`;
 
-                fsHelper.saveFileToPath(path.join(grandParentDir, 'data'), output, fileName);
+                fsHelper.saveFileToPath(outputPath || path.join(grandParentDir, 'data'), llmResponse, fileName);
 
             })
     } catch(error) {

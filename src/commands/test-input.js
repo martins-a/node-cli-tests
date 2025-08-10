@@ -12,9 +12,9 @@ import path from "path";
 export const testInput = () => {
 
     program.command('test-input')
+    .option('-c, --context', 'Request external context')
     .description('Test a given method')
-    .option('-p', '--preference', false)
-    .action(async (_, args) => {
+    .action(async (opts) => {
 
         try {
 
@@ -22,23 +22,21 @@ export const testInput = () => {
             const __dirname = path.dirname(__filename);
             const grandParentDir = path.resolve(__dirname, '..', '..');
 
-            const opts = args.opts();
-
             let cachedOptions = fsHelper.readJsonSync(path.join(grandParentDir, 'data/configurations.json'));
 
             await validationMiddleware.validate(cachedOptions);
 
-            let userInput = {};
-
-            if (opts.p || opts.preference) {
-                userInput = await inquirer.prompt(commandsConstants.inputFileQuestions);
-            } else {
-                userInput = await inquirer.prompt(commandsConstants.inputFileQuestionsNoConfig);
-            }
+			let userInput = {};
+			if (opts.context) {
+            	userInput = await inquirer.prompt(commandsConstants.inputFileQuestionsNoConfig);
+			} else {
+				// noinspection JSCheckFunctionSignatures
+				userInput = await inquirer.prompt(commandsConstants.singleInputQuestion);
+			}
 
             console.log(chalk.green('Tests are being generated...'));
 
-			const { method, externalContext, language, programmingFramework, testFramework, aiAssistant, outputPath } = { ...cachedOptions, ...userInput };
+			const { method, externalContext="", language, programmingFramework, testFramework, aiAssistant, outputPath } = { ...cachedOptions, ...userInput };
 
             const [systemPrompt, userPrompt ] = promptFactory.testSingleMethod(
 				language,
@@ -47,7 +45,6 @@ export const testInput = () => {
 				method,
 				externalContext
             );
-
 
             const llmResponse = await connectorsRouter.resolve(aiAssistant, systemPrompt, userPrompt);
 

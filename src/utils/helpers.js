@@ -7,7 +7,7 @@ export const findFunctionsByAnnotation = (fileContent, annotation) => {
 
         const lines = fileContent.split('\n');
         let i = 0;
-        const functions = [];
+        let functions = "";
 
         //console.log(chalk.red('functions will be parsed - total lines:'));
         //console.log(lines.length);
@@ -47,7 +47,7 @@ export const findFunctionsByAnnotation = (fileContent, annotation) => {
 
                 }
 
-                functions.push(fnLines.join('\n').trim());
+                functions += "\n" + (fnLines.join('\n').trim());
 
             }
 
@@ -60,4 +60,7 @@ export const findFunctionsByAnnotation = (fileContent, annotation) => {
         console.error(error);
         throw error;
     }
+}
+
+export const ollamaCountTokens = (text, model) => {
 }

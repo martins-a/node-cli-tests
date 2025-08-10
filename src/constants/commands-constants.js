@@ -45,12 +45,12 @@ const configOptions = [
 
 const inputFileQuestions = [
 	{
-		type: "input",
+		type: "editor",
 		name: "method",
 		message: "Provide the method to be tested"
 	},
 	{
-		type: 'input',
+		type: 'editor',
 		name: "externalContext",
 		message: "Provide external context"
 	},
@@ -83,4 +83,18 @@ export const commandsConstants = {
 	],
 	inputFileQuestionsNoConfig: [...inputFileQuestions],
 	testFileQuestionsNoConfig: [...testFileQuestions],
+	contextQuestion: [
+		{
+			type: 'editor',
+			name: "externalContext",
+			message: "Provide external context (such as folder structure, models and services)"
+		},
+	],
+	singleInputQuestion: [
+		{
+			type: "editor",
+			name: "method",
+			message: "Provide the method to be tested"
+		},
+	]
 }
