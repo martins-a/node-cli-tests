@@ -3,15 +3,15 @@ import {aiAssistant} from "../constants/ai-assistants.js";
 import {openaiConnector} from "./openai-connector.js";
 
 export const connectorsRouter = {
-	resolve: async (assistant, systemPrompt, userPrompt) => {
+	resolve: async (assistant, systemPrompt, userPrompt, history="", additionalInfo="") => {
 		try {
 			switch (assistant) {
 				case aiAssistant.ollama:
-					return ollamaConnector.handleRequest(systemPrompt, userPrompt);
+					return ollamaConnector.handleRequest(systemPrompt, userPrompt, history, additionalInfo);
 				case aiAssistant.openAI:
 					return openaiConnector.handleRequest(systemPrompt, userPrompt);
 				default:
-					return ollamaConnector.handleRequest(systemPrompt, userPrompt);
+					return ollamaConnector.handleRequest(systemPrompt, userPrompt, history, additionalInfo);
 			}
 		} catch (error) {
 			console.error(error);

@@ -16,6 +16,7 @@ export const testInput = () => {
 
     program.command('test-input')
     .option('-c, --context', 'Request external context')
+	.option('-m, --multiturn', 'Use multiturn to multiple requests in the same conversation')
     .description('Test a given method')
     .action(async (opts) => {
 
@@ -62,6 +63,41 @@ export const testInput = () => {
             const fileName = `tests_output_${Date.now()}`;
 
             fsHelper.saveFileToPath(outputPath || path.join(grandParentDir, 'data'), llmResponse, fileName);
+
+			if ( opts.multiturn ) {
+
+				while(true) {
+					const checkContinue = await inquirer.prompt({
+						name: "continueConversation",
+						message: "Continue Conversation?",
+						default: false,
+						type: "confirm",
+					})
+
+					console.log(checkContinue.continueConversation);
+
+					if ( checkContinue.continueConversation ) {
+						const nextInfo = await inquirer.prompt({
+							name: "info",
+							message: "Add more information",
+							type: "editor"
+						});
+						const nextLlmResponse = await connectorsRouter.resolve(
+							aiAssistant,
+							systemPrompt,
+							userPrompt,
+							llmResponse,
+							nextInfo.info
+						);
+
+						fsHelper.saveFileToPath(outputPath || path.join(grandParentDir, 'data'), nextLlmResponse, `tests_output_${Date.now()}`);
+					} else {
+						break;
+					}
+				}
+
+			}
+
 
         } catch(error) {
             console.log(chalk.red('Error:'));

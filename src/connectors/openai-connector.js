@@ -17,10 +17,11 @@ const client = new OpenAI({
 })
 
 export const openaiConnector = {
-	handleRequest: async (systemPrompt, userPrompt) => {
+	handleRequest: async (systemPrompt, userPrompt, history="") => {
 		try {
 			const completion = await client.chat.completions.create({
 				model: getCurrentModel(aiAssistant.openAI),
+
 				messages: [
 					{
 						role: 'developer',
@@ -29,7 +30,7 @@ export const openaiConnector = {
 					{
 						role: 'user',
 						content: userPrompt
-					}
+					},
 				]
 			});
 			return completion.choices[0].message.content;

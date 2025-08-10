@@ -3,7 +3,7 @@ import {getCurrentModel} from "../constants/current-model.js";
 import {aiAssistant} from "../constants/ai-assistants.js";
 
 export const ollamaConnector = {
-	handleRequest: async (systemPrompt, userPrompt) => {
+	handleRequest: async (systemPrompt, userPrompt, history="", additionalInfo="") => {
 		try {
 			const response = await ollama.chat({
 				model: getCurrentModel(aiAssistant.ollama),
@@ -13,9 +13,17 @@ export const ollamaConnector = {
 						content: systemPrompt
 					},
 					{
+						role: 'assistant',
+						content: history
+					},
+					{
 						role: 'user',
 						content: userPrompt
-					}
+					},
+					{
+						role: 'user',
+						content: additionalInfo
+					},
 				]
 			});
 			return response.message.content;
