@@ -1,8 +1,9 @@
 import OpenAI from 'openai';
-import {openaiModels} from "../constants/openai-models.js";
 import {fileURLToPath} from "url";
 import path from "path";
 import dotenv from "dotenv";
+import {getCurrentModel} from "../constants/current-model.js";
+import {aiAssistant} from "../constants/ai-assistants.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,7 +20,7 @@ export const openaiConnector = {
 	handleRequest: async (systemPrompt, userPrompt) => {
 		try {
 			const completion = await client.chat.completions.create({
-				model: openaiModels.gpt41mini,
+				model: getCurrentModel(aiAssistant.openAI),
 				messages: [
 					{
 						role: 'developer',

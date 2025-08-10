@@ -1,6 +1,6 @@
-import os from 'os';
-import { exec } from 'child_process';
 import chalk from "chalk";
+import {encoding_for_model} from "tiktoken";
+import {aiAssistant} from "../constants/ai-assistants.js";
 
 export const findFunctionsByAnnotation = (fileContent, annotation) => {
     try {
@@ -62,5 +62,13 @@ export const findFunctionsByAnnotation = (fileContent, annotation) => {
     }
 }
 
-export const ollamaCountTokens = (text, model) => {
+export const countTokens = (text, model, _aiAssistant) => {
+    if ( _aiAssistant === aiAssistant.openAI ) {
+        const encoder = encoding_for_model(model); // Use an appropriate encoding
+        const tokens = encoder.encode(text);
+        return tokens.length;
+    } else {
+        return text.split(/\s+/).filter(word => word.length > 0).length;
+    }
+
 }

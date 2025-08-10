@@ -16,7 +16,8 @@
     "inquirer": "^12.6.0",
     "ollama": "^0.5.15",
     "openai": "^5.11.0",
-    "ora": "^8.2.0"
+    "ora": "^8.2.0",
+    "tiktoken": "^1.0.22"
   },
   "bin": {
     "testbot": "./bin/index.js"

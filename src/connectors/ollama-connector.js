@@ -1,11 +1,12 @@
 import ollama from "ollama";
-import {ollamaModels} from "../constants/ollama-models.js";
+import {getCurrentModel} from "../constants/current-model.js";
+import {aiAssistant} from "../constants/ai-assistants.js";
 
 export const ollamaConnector = {
 	handleRequest: async (systemPrompt, userPrompt) => {
 		try {
 			const response = await ollama.chat({
-				model: ollamaModels.qwen25coder3b,
+				model: getCurrentModel(aiAssistant.ollama),
 				messages: [
 					{
 						role: 'system',

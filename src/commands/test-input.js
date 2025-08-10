@@ -8,6 +8,9 @@ import {connectorsRouter} from "../connectors/connector-router.js";
 import {validationMiddleware} from "../validation/validation-middleware.js";
 import {fileURLToPath} from "url";
 import path from "path";
+import {countTokens} from "../utils/helpers.js";
+import {getCurrentModel} from "../constants/current-model.js";
+import {aiAssistant} from "../constants/ai-assistants.js";
 
 export const testInput = () => {
 
@@ -46,7 +49,15 @@ export const testInput = () => {
 				externalContext
             );
 
+			const inputTokens = countTokens(systemPrompt+userPrompt,getCurrentModel(aiAssistant));
+			console.log(chalk.bgCyan(`Input tokens: ${inputTokens}`));
+
+			console.log(chalk.cyan(`Using the model: ${getCurrentModel(aiAssistant)}`));
+
             const llmResponse = await connectorsRouter.resolve(aiAssistant, systemPrompt, userPrompt);
+
+			const outputTokens = countTokens(llmResponse,getCurrentModel(aiAssistant));
+			console.log(chalk.bgCyan(`Output tokens: ${outputTokens}`));
 
             const fileName = `tests_output_${Date.now()}`;
 
