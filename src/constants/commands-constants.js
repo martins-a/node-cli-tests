@@ -1,4 +1,7 @@
 import {aiAssistant} from "./ai-assistants.js";
+import {programmingFrameworks} from "./programming-frameworks.js";
+import {programmingLanguages} from "./programming-languages.js";
+import {testFrameworks} from "./test-frameworks.js";
 
 const configOptions = [
 	{
@@ -6,8 +9,7 @@ const configOptions = [
 		name: "language",
 		message: "Select a programming language",
 		choices: [
-			'Javascript',
-			'Typescript'
+			programmingLanguages.typescript
 		]
 	},
 	{
@@ -15,7 +17,7 @@ const configOptions = [
 		name: "programmingFramework",
 		message: "Select a programming framework",
 		choices: [
-			'Angular 20'
+			programmingFrameworks.angular20
 		]
 	},
 	{
@@ -23,7 +25,7 @@ const configOptions = [
 		name: "testFramework",
 		message: "Select a test framework",
 		choices: [
-			'Jest'
+			testFrameworks.jest
 		]
 	},
 	{

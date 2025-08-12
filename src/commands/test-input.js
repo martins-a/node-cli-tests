@@ -10,7 +10,6 @@ import {fileURLToPath} from "url";
 import path from "path";
 import {countTokens} from "../utils/helpers.js";
 import {getCurrentModel} from "../constants/current-model.js";
-import {aiAssistant} from "../constants/ai-assistants.js";
 
 export const testInput = () => {
 
@@ -42,12 +41,12 @@ export const testInput = () => {
 
 			const { method, externalContext="", language, programmingFramework, testFramework, aiAssistant, outputPath } = { ...cachedOptions, ...userInput };
 
-            const [systemPrompt, userPrompt ] = promptFactory.testSingleMethod(
+
+            const [systemPrompt, userPrompt] = promptFactory.testSingleMethod(
 				language,
 				programmingFramework,
 				testFramework,
-				method,
-				externalContext
+				method
             );
 
 			const inputTokens = countTokens(systemPrompt+userPrompt,getCurrentModel(aiAssistant));
@@ -55,7 +54,7 @@ export const testInput = () => {
 
 			console.log(chalk.cyan(`Using the model: ${getCurrentModel(aiAssistant)}`));
 
-            const llmResponse = await connectorsRouter.resolve(aiAssistant, systemPrompt, userPrompt);
+            const llmResponse = await connectorsRouter.resolve(aiAssistant, systemPrompt, userPrompt, "", externalContext);
 
 			const outputTokens = countTokens(llmResponse,getCurrentModel(aiAssistant));
 			console.log(chalk.bgCyan(`Output tokens: ${outputTokens}`));
@@ -77,8 +76,8 @@ export const testInput = () => {
 					console.log(checkContinue.continueConversation);
 
 					if ( checkContinue.continueConversation ) {
-						const nextInfo = await inquirer.prompt({
-							name: "info",
+						const nextTask = await inquirer.prompt({
+							name: "task",
 							message: "Add more information",
 							type: "editor"
 						});
@@ -86,8 +85,9 @@ export const testInput = () => {
 							aiAssistant,
 							systemPrompt,
 							userPrompt,
+							externalContext,
 							llmResponse,
-							nextInfo.info
+							nextTask.task
 						);
 
 						fsHelper.saveFileToPath(outputPath || path.join(grandParentDir, 'data'), nextLlmResponse, `tests_output_${Date.now()}`);
