@@ -16,7 +16,7 @@ export const connectorsRouter = {
 				case aiAssistant.ollama:
 					return ollamaConnector.handleRequest(systemPrompt, userPrompt, externalContext, history, nextTask);
 				case aiAssistant.openAI:
-					return openaiConnector.handleRequest(systemPrompt, userPrompt);
+					return openaiConnector.handleRequest(systemPrompt, userPrompt, externalContext, history, nextTask);
 				default:
 					return ollamaConnector.handleRequest(systemPrompt, userPrompt, externalContext, history, nextTask);
 			}

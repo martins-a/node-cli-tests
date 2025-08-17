@@ -39,17 +39,16 @@ export const testInput = () => {
 
             console.log(chalk.green('Tests are being generated...'));
 
-			const { method, externalContext="", language, programmingFramework, testFramework, aiAssistant, outputPath } = { ...cachedOptions, ...userInput };
+			const { code, externalContext="", language, programmingFramework, testFramework, aiAssistant, outputPath } = { ...cachedOptions, ...userInput };
 
-
-            const [systemPrompt, userPrompt] = promptFactory.testSingleMethod(
+            const [systemPrompt, userPrompt] = promptFactory.testCode(
 				language,
 				programmingFramework,
 				testFramework,
-				method
+				code
             );
 
-			const inputTokens = countTokens(systemPrompt+userPrompt,getCurrentModel(aiAssistant));
+			const inputTokens = countTokens(systemPrompt+userPrompt+externalContext,getCurrentModel(aiAssistant));
 			console.log(chalk.bgCyan(`Input tokens: ${inputTokens}`));
 
 			console.log(chalk.cyan(`Using the model: ${getCurrentModel(aiAssistant)}`));
@@ -66,21 +65,13 @@ export const testInput = () => {
 			if ( opts.multiturn ) {
 
 				while(true) {
-					const checkContinue = await inquirer.prompt({
-						name: "continueConversation",
-						message: "Continue Conversation?",
-						default: false,
-						type: "confirm",
-					})
+					const checkContinue = await inquirer.prompt(commandsConstants.continueConversation);
 
 					console.log(checkContinue.continueConversation);
 
 					if ( checkContinue.continueConversation ) {
-						const nextTask = await inquirer.prompt({
-							name: "task",
-							message: "Add more information",
-							type: "editor"
-						});
+
+						const nextTask = await inquirer.prompt(commandsConstants.addMoreInformation);
 						const nextLlmResponse = await connectorsRouter.resolve(
 							aiAssistant,
 							systemPrompt,

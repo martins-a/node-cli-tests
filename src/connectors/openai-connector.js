@@ -17,19 +17,41 @@ const client = new OpenAI({
 })
 
 export const openaiConnector = {
-	handleRequest: async (systemPrompt, userPrompt, history="") => {
+	handleRequest: async (
+		systemPrompt,
+		userPrompt,
+		externalContext,
+		history="",
+		nextTask=""
+	) => {
 		try {
+			/*console.log(systemPrompt);
+			console.log(userPrompt);
+			console.log(externalContext);
+			console.log(history);
+			console.log(nextTask);*/
 			const completion = await client.chat.completions.create({
 				model: getCurrentModel(aiAssistant.openAI),
-
 				messages: [
 					{
-						role: 'developer',
+						role: 'system',
 						content: systemPrompt
+					},
+					{
+						role: 'assistant',
+						content: history
+					},
+					{
+						role: 'assistant',
+						content:externalContext
 					},
 					{
 						role: 'user',
 						content: userPrompt
+					},
+					{
+						role: 'user',
+						content: nextTask
 					},
 				]
 			});

@@ -42,7 +42,7 @@ export const testFile = () => {
 
                 const functions = findFunctionsByAnnotation(fileContent, annotationText);
 
-                const [systemPrompt, userPrompt ] = promptFactory.testSingleMethod(
+                const [systemPrompt, userPrompt ] = promptFactory.testCode(
                     language,
                     programmingFramework,
                     testFramework,

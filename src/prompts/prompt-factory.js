@@ -2,7 +2,7 @@
 import { prompts } from '../constants/prompts-constants.js';
 
 export const promptFactory = {
-    testSingleMethod: (progLanguage, progFramework, testFramework, testedCode) => {
+    testCode: (progLanguage, progFramework, testFramework, testedCode) => {
         const prompt = prompts.promptA;
         return [
             prompt.system(progLanguage, progFramework, testFramework),

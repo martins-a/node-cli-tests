@@ -24,7 +24,7 @@ export const validationMiddleware = {
 				if (error) {
 					console.log('Ollama is not running.');
 				} else {
-					console.log('Ollama is running.');
+					//console.log('Ollama is running.');
 				}
 			})
 			resolve();
@@ -39,7 +39,7 @@ export const validationMiddleware = {
 					console.log('Is not installed.');
 					reject();
 				} else {
-					console.log('Is installed.');
+					//console.log('Is installed.');
 					resolve();
 				}
 			})

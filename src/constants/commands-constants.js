@@ -48,8 +48,8 @@ const configOptions = [
 const inputFileQuestions = [
 	{
 		type: "editor",
-		name: "method",
-		message: "Provide the method to be tested"
+		name: "code",
+		message: "Provide the code to be tested"
 	},
 	{
 		type: 'editor',
@@ -95,8 +95,24 @@ export const commandsConstants = {
 	singleInputQuestion: [
 		{
 			type: "editor",
-			name: "method",
-			message: "Provide the method to be tested"
+			name: "code",
+			message: "Provide the code to be tested"
 		},
+	],
+	continueConversation: [
+		{
+			name: "continueConversation",
+			message: "Continue Conversation?",
+			default: false,
+			type: "confirm",
+		}
+	],
+	addMoreInformation: [
+		{
+			name: "task",
+			message: "Add more information",
+			type: "editor"
+		}
 	]
+
 }

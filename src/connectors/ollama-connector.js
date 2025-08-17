@@ -10,11 +10,13 @@ export const ollamaConnector = {
 		history="",
 		nextTask="",) => {
 		try {
-			/*console.log(systemPrompt);
-			console.log(userPrompt);
-			console.log(externalContext);
-			console.log(history);
-			console.log(nextTask);*/
+
+			//console.log(systemPrompt);
+			//console.log(userPrompt);
+			//console.log(externalContext);
+			//console.log(history);
+			//console.log(nextTask);
+
 			const response = await ollama.chat({
 				model: getCurrentModel(aiAssistant.ollama),
 				messages: [

@@ -10,7 +10,7 @@ export const fsHelper = {
 
 			let finalPath = fileName ? path.join(filePath, fileName) : filePath;
 
-			console.log(chalk.yellow(finalPath));
+			//console.log(chalk.yellow(finalPath));
 
 			const dir = path.dirname(filePath);
 			if (!fs.existsSync(dir)) {
